@@ -1,0 +1,7 @@
+-- MASTER CAT/OEF AUTOMATION
+USE Stargate_Gold;
+GO
+PRINT '--- EXECUTING BLOOMBERG SURVEILLANCE REPORT ---';
+EXEC dbo.usp_Generate_Surveillance_Report;
+GO
+PRINT '--- SYSTEM NOMINAL ---';
