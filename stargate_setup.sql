@@ -1,0 +1,28 @@
+-- STARGATE CLUSTER: Schema & View Synchronization
+-- Ref: April 24, 2026 (Friday Close)
+
+CREATE OR REPLACE VIEW TERACAP_TELEMETRY_VIEW AS
+WITH RAW_METRICS AS (
+    SELECT 
+        BRAND_NAME,
+        CASE 
+            WHEN BRAND_NAME = 'Tesla'          THEN 1420.00
+            WHEN BRAND_NAME = 'BYD'            THEN 919.47
+            WHEN BRAND_NAME = 'JP Morgan'      THEN 831.45
+            WHEN BRAND_NAME = 'NextEra Energy' THEN 198.69
+            WHEN BRAND_NAME = 'BNY Mellon'     THEN 98.73
+            WHEN BRAND_NAME = 'Toyota'         THEN 250.66
+        END AS APR_2026,
+        REBOUND_FACTOR
+    FROM CAR_TELEMETRY
+)
+SELECT 
+    BRAND_NAME,
+    APR_2026,
+    REBOUND_FACTOR,
+    ROUND(APR_2026 * POWER(REBOUND_FACTOR, 2.5), 2) AS OCT_2028_PROJ,
+    CASE 
+        WHEN (APR_2026 * POWER(REBOUND_FACTOR, 2.5)) >= 1000 THEN 'TERACAP'
+        ELSE 'MEGACAP'
+    END AS STATUS
+FROM RAW_METRICS;
