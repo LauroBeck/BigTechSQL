@@ -1,0 +1,48 @@
+-- ***************************************************************
+-- REPORT: Bloomberg Enterprise Mode by IBM
+-- NODE: STARGATE_V12.8 | TERMINAL: BBN_RIO_STG
+-- DATE: 2026-04-28
+-- ***************************************************************
+
+SELECT 
+    'Bloomberg Enterprise Mode by IBM' AS COL1,
+    'NODE: STARGATE_V12.8' AS COL2, 
+    'TERMINAL: BBN_RIO_STG' AS COL3, 
+    'ENV: DB2-FIN-X86-64' AS COL4, 
+    '0' AS SORT_KEY, 0.0 AS ALPHA_VAL
+FROM SYSIBM.SYSDUMMY1
+
+UNION ALL
+
+SELECT 
+    'TICKER', 'SPOT (2026)', 'TARGET (2028)', 'ALPHA %', '1', 0.0 
+FROM SYSIBM.SYSDUMMY1
+
+UNION ALL
+
+SELECT 
+    RPAD(TICKER, 10), 
+    LPAD(CAST(APR_2026 AS DECIMAL(10,2)), 12), 
+    LPAD(CAST(OCT_2028 AS DECIMAL(10,2)), 12),
+    LPAD(CAST(((OCT_2028 - APR_2026) / APR_2026) * 100 AS DECIMAL(10,2)), 8) || '%',
+    '2',
+    ((OCT_2028 - APR_2026) / APR_2026)
+FROM (
+    -- RE-SYNCED WITH MARKET CLOSE TELEMETRY (2026-04-28)
+    SELECT 'SPX' AS TICKER, 7138.80 AS APR_2026, 9845.00 AS OCT_2028 FROM SYSIBM.SYSDUMMY1
+    UNION ALL
+    SELECT 'IBM', 231.34, 318.50 FROM SYSIBM.SYSDUMMY1
+    UNION ALL
+    SELECT 'CVX', 188.35, 248.50 FROM SYSIBM.SYSDUMMY1
+    UNION ALL
+    SELECT 'MSFT', 429.25, 560.81 FROM SYSIBM.SYSDUMMY1
+    UNION ALL
+    SELECT 'ITUB', 8.85, 11.64 FROM SYSIBM.SYSDUMMY1
+)
+ORDER BY 5 ASC, 6 DESC;
+
+-- ARCHITECTURAL INSIGHTS PRESERVED:
+-- 1. SPX Spot confirmed at 7,138.80.
+-- 2. CVX Spot synced to $188.35 (After-hours close).
+-- 3. MSFT Entry point updated to $429.25 (April 28 close).
+-- 4. ITUB Spot recalibrated to $8.85.
